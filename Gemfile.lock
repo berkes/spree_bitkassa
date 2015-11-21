@@ -73,7 +73,7 @@ GIT
 PATH
   remote: .
   specs:
-    spree_bitkassa (3.0.4)
+    spree_bitkassa (0.0.1)
       spree_core (~> 3.0.4)
 
 GEM
