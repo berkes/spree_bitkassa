@@ -16,6 +16,8 @@ ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../dummy/config/environment.rb',  __FILE__)
 
 require 'rspec/rails'
+require 'webmock/rspec'
+require "byebug"
 require 'database_cleaner'
 require 'ffaker'
 
@@ -29,6 +31,7 @@ require 'spree/testing_support/capybara_ext'
 require 'spree/testing_support/controller_requests'
 require 'spree/testing_support/factories'
 require 'spree/testing_support/url_helpers'
+require 'spree/testing_support/order_walkthrough'
 
 # Requires factories defined in lib/spree_bitkassa/factories.rb
 require 'spree_bitkassa/factories'

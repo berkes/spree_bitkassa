@@ -1,7 +1,7 @@
 SpreeBitkassa
 =============
 
-Introduction goes here.
+Integrates [Bitkassa](https://www.bitkassa.nl/) as payment gateway into Spree.
 
 Installation
 ------------
@@ -36,4 +36,4 @@ Simply add this require statement to your spec_helper:
 require 'spree_bitkassa/factories'
 ```
 
-Copyright (c) 2015 [name of extension creator], released under the New BSD License
+Copyright (c) 2015 Bèr Kessels, released under the New BSD License
