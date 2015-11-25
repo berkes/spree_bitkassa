@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.0.0'
 
   s.author    = "Bèr Kessels"
-  s.email     = "ber@berk.es"
+  s.email     = "gems@berk.es"
   s.homepage  = "http://berk.es"
 
   s.files       = `git ls-files`.split("\n")
