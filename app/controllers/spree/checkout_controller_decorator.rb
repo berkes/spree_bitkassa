@@ -1,17 +1,24 @@
 module Spree
   CheckoutController.class_eval do
-    around_action :pay_with_bitkassa
+    ## Monkeypatch Spree::CheckoutController#update
+    def update_with_bitkassa
+      if pay_with_bitkassa?
+        if @order.update_from_params(params, permitted_checkout_attributes, request.headers.env)
+          redirect_to payment_method.redirect_url(@order)
+        else
+          render :edit
+        end
+      else
+        update_without_bitkassa
+      end
+    end
+    alias_method_chain :update, :bitkassa
 
     private
 
     def pay_with_bitkassa
       if pay_with_bitkassa?
-        ## @INK: attempt to extract the payment from the just-now updated
-        # @order. We've added a payment, but should determine
-        # which is the payment we're dealing with here, from all the possible
-        # payments in @order.payments. See Order.update_from_params()
-        redirect_to "https://www.bitkassa.nl/tx/qwerty"
-        #redirect_to payment.payment_url
+        redirect_to payment.payment_url
       else
         yield
       end
