@@ -26,7 +26,7 @@ module Spree
 
     def pay_with_bitkassa?
       return false unless params[:state] == "payment"
-      return false unless payment_method.is_a? Spree::PaymentMethod::Bitkassa
+      return false unless payment_method.is_a? Spree::PaymentMethod::BitkassaMethod
       return true
     end
 

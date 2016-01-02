@@ -9,7 +9,7 @@ feature "checkout" do
     order.reload
   end
   let(:bitkassa_request_url) { "https://www.bitkassa.nl/api/v1" }
-  let(:bitkassa) { Spree::PaymentMethod::Bitkassa.create!(name: "Bitcoin") }
+  let(:bitkassa) { Spree::PaymentMethod::BitkassaMethod.create!(name: "Bitcoin") }
   let(:payment_request_response) { stored_response("payment_request_response") }
 
   before do
@@ -36,8 +36,8 @@ feature "checkout" do
     choose "Bitcoin"
     click_button "Save and Continue"
 
-    #expect(WebMock).to have_requested(:post, bitkassa_request_url).
-      #with(body: /^p=[^&]+&a=.+$/)
+    expect(WebMock).to have_requested(:post, bitkassa_request_url).
+      with(body: /^p=[^&]+&a=.+$/)
 
     response = page.driver.response
     expect(response.status).to be 302

@@ -3,7 +3,7 @@ require "spec_helper"
 describe Spree::CheckoutController do
   let(:user) { Spree::User.new }
   let(:order) { OrderWalkthrough.up_to(:payment) }
-  let(:payment_method) { Spree::PaymentMethod::Bitkassa.new }
+  let(:payment_method) { Spree::PaymentMethod::BitkassaMethod.new }
   let(:params) do
     {
       state: "payment",

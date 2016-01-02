@@ -1,5 +1,5 @@
 module Spree
-  class PaymentMethod::Bitkassa < PaymentMethod
+  class PaymentMethod::BitkassaMethod < PaymentMethod
     preference :bitkassa_merchant_id, :string
     preference :bitkassa_secret_api_key, :string
 
