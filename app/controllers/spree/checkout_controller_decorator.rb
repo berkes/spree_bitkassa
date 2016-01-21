@@ -4,7 +4,8 @@ module Spree
     def update_with_bitkassa
       if pay_with_bitkassa?
         if @order.update_from_params(params, permitted_checkout_attributes, request.headers.env)
-          redirect_to payment_method.redirect_url(@order)
+          payment_method.initiate(@order)
+          redirect_to payment_method.payment_url
         else
           render :edit
         end
@@ -16,14 +17,6 @@ module Spree
 
     private
 
-    def pay_with_bitkassa
-      if pay_with_bitkassa?
-        redirect_to payment.payment_url
-      else
-        yield
-      end
-    end
-
     def pay_with_bitkassa?
       return false unless params[:state] == "payment"
       return false unless payment_method.is_a? Spree::PaymentMethod::BitkassaMethod
@@ -31,7 +24,9 @@ module Spree
     end
 
     def payment_method
-      Spree::PaymentMethod.find(payment_method_id) unless payment_method_id.nil?
+      if payment_method_id
+        @payment_method ||= Spree::PaymentMethod.find(payment_method_id)
+      end
     end
 
     def payment_method_id

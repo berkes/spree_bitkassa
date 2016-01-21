@@ -4,6 +4,7 @@ describe Spree::CheckoutController do
   let(:user) { Spree::User.new }
   let(:order) { OrderWalkthrough.up_to(:payment) }
   let(:payment_method) { Spree::PaymentMethod::BitkassaMethod.new }
+
   let(:params) do
     {
       state: "payment",
@@ -22,6 +23,10 @@ describe Spree::CheckoutController do
 
     allow(order).to receive(:valid?).and_return(true)
     allow(order).to receive(:deliver_order_confirmation_email).and_return(true)
+
+    allow(payment_method).to receive(:initiate).and_return(true)
+    allow(payment_method).to receive(:payment_url).
+      and_return("https://example.com/tx/qwerty")
   end
 
   describe "#pay_with_bitkassa" do
@@ -49,15 +54,19 @@ describe Spree::CheckoutController do
       end
     end
 
-    it "redirects" do
+    it "initatiates payment" do
+      expect(payment_method).to receive(:initiate).with(order)
       put :update, params
-      expect(response).to redirect_to("https://www.bitkassa.nl/tx/qwerty")
+    end
+
+    it "redirects to payment_url from payment_method" do
+      put :update, params
+      expect(response).to redirect_to("https://example.com/tx/qwerty")
     end
 
     it "finds payment method" do
       expect(Spree::PaymentMethod).to receive(:find).with("42")
       put :update, params
     end
-
   end
 end
