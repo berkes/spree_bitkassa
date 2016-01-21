@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+Date: Sat, 21 Nov 2015 15:15:35 GMT
+Server: Apache
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Set-Cookie: PHPSESSID=2ej7juemb77dqhe00iivk5ebh6; path=/
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Set-Cookie: Language=nl; path=/
+X-Powered-By: PleskLin
+Content-Length: 255
+Connection: close
+Content-Type: application/json
+
+{"payment_id":"2nwxqex8lu","payment_url":"https://www.bitkassa.nl/tx/2nwxqex8lu","address":"1BKPeShZoekdpNaG2ftmU7PK7wGegkC5Hh","amount":"3000","bitcoin_url":"bitcoin:1BKPeShZoekdpNaG2ftmU7PK7wGegkC5Hh?amount=0.00003","expire":"1448119835","success":true}

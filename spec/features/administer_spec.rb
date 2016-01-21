@@ -10,7 +10,7 @@ feature "Administer" do
       end
 
       scenario "I want to provide the Sisow API-credentials" do
-        select "Spree::PaymentMethod::Bitkassa", from: "gtwy-type"
+        select "Bitkassa", from: "gtwy-type"
         fill_in "Name", with: "BitKassa"
         click_button "Create"
 

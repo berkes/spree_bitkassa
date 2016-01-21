@@ -50,6 +50,9 @@ RSpec.configure do |config|
   # current_path.should eql(spree.products_path)
   config.include Spree::TestingSupport::UrlHelpers
 
+  config.include SpreeStubs
+  config.include WebMockFixtureHelpers
+
   # == Requests support
   #
   # Adds convenient methods to request Spree's controllers
@@ -84,6 +87,10 @@ RSpec.configure do |config|
   config.before :each do
     DatabaseCleaner.strategy = RSpec.current_example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
+
+    # Set a fake API key and merchant_id.
+    Spree::Config.bitkassa_secret_api_key = "SECRET"
+    Spree::Config.bitkassa_merchant_id = "MERCHANTID"
   end
 
   # After each spec clean the database.
