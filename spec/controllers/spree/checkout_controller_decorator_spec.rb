@@ -81,7 +81,7 @@ describe Spree::CheckoutController do
       allow(payment_response).to receive(:expire).and_return(1455260000)
       expect(Spree::BitkassaTransaction).to receive(:create).
         with(spree_payment_id: 1,
-             bitkassa_payment_id: "qwerty",
+             payment_id: "qwerty",
              address: "1EJiC4omTWvLmRQbU9jm4LYsQvUV4M9uYK",
              amount: 1337,
              expire: 1455260000).

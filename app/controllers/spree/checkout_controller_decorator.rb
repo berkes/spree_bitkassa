@@ -15,7 +15,7 @@ module Spree
 
           Spree::BitkassaTransaction.create(
             spree_payment_id: payment.id,
-            bitkassa_payment_id: response.payment_id,
+            payment_id: response.payment_id,
             address: response.address,
             amount: response.amount,
             expire: response.expire
