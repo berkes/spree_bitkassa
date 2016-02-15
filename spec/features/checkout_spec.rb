@@ -43,4 +43,11 @@ feature "checkout" do
     expect(response.status).to be 302
     expect(response.headers["Location"]).to match(%r(https://www\.bitkassa\.nl/tx/.*))
   end
+
+  scenario "Paying with Bitkassa does not finalize the order: no mail sent" do
+    expect do
+      choose "Bitcoin"
+      click_button "Save and Continue"
+    end.not_to change(ActionMailer::Base.deliveries, :length)
+  end
 end
