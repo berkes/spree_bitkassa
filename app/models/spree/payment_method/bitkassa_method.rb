@@ -8,6 +8,10 @@ module Spree
       super
     end
 
+    def source_required?
+      false
+    end
+
     ##
     # Initiates a payment with the API.
     def initiate(order)
