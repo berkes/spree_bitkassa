@@ -1,12 +1,22 @@
 module Spree
   class BitkassaCallbackController < ApplicationController
     def create
-      transaction = BitkassaTransaction.find_by!(bitkassa_payment_id: bitkassa_payment_id)
-      transaction.order.next!
+      load_transaction
+      process_transaction
       render text: "OK"
     end
 
     private
+
+    def load_transaction
+      @bitkassa_transaction ||= BitkassaTransaction.find_by!(
+        bitkassa_payment_id: bitkassa_payment_id
+      )
+    end
+
+    def process_transaction
+      @bitkassa_transaction.order.next!
+    end
 
     def bitkassa_payment_id
       transaction_params[:payment_id]
