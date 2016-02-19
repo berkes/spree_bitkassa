@@ -11,16 +11,19 @@ describe Spree::BitkassaCallbackController do
   end
 
   describe "#create" do
-    it "finds the Payment to be processed" do
-      expect(Spree::BitkassaTransaction).to receive(:find_by!).
-        with(bitkassa_payment_id: "dhqe4cnj7f").
-        and_return(transaction)
-      post :create, create_params
-    end
+    describe "with success as status" do
+      let(:payment_status) { "success" }
+      it "finds the Payment to be processed" do
+        expect(Spree::BitkassaTransaction).to receive(:find_by!).
+          with(bitkassa_payment_id: "dhqe4cnj7f").
+          and_return(transaction)
+        post :create, create_params
+      end
 
-    it "completes the order for this transaction" do
-      expect(order).to receive(:next!)
-      post :create, create_params
+      it "completes the order for this transaction" do
+        expect(order).to receive(:next!)
+        post :create, create_params
+      end
     end
   end
 
@@ -29,7 +32,7 @@ describe Spree::BitkassaCallbackController do
   def create_params
     json_payload = {
       payment_id: "dhqe4cnj7f",
-      payment_status: "success",
+      payment_status: payment_status,
       meta_info: "A947183352"
     }.to_json
 
