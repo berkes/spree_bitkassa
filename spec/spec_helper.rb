@@ -87,6 +87,7 @@ RSpec.configure do |config|
   config.before :each do
     DatabaseCleaner.strategy = RSpec.current_example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
+    Capybara.reset_sessions!
 
     # Set a fake API key and merchant_id.
     Spree::Config.bitkassa_secret_api_key = "SECRET"

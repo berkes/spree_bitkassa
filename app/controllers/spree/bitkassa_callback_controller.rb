@@ -15,7 +15,12 @@ module Spree
     end
 
     def process_transaction
-      @bitkassa_transaction.order.next!
+      case payment_status
+      when :payed
+        complete_order
+      when :cancelled, :expired
+        void_payment
+      end
     end
 
     def bitkassa_payment_id
@@ -24,6 +29,18 @@ module Spree
 
     def transaction_params
       JSON.parse(Base64.urlsafe_decode64(params[:p])).with_indifferent_access
+    end
+
+    def complete_order
+      @bitkassa_transaction.order.next!
+    end
+
+    def void_payment
+      @bitkassa_transaction.payment.void!
+    end
+
+    def payment_status
+      transaction_params[:payment_status].to_sym
     end
   end
 end

@@ -1,18 +1,19 @@
 require "spec_helper"
 
 describe Spree::BitkassaCallbackController do
-  let(:transaction) { double(:transaction) }
+  let(:transaction) { double(:transaction, payment: payment, order: order) }
+  let(:payment) { double(:payment) }
   let(:order) { double(:order, next!: nil) }
 
   before do
     allow(Spree::BitkassaTransaction).to receive(:find_by!).
       and_return(transaction)
-    allow(transaction).to receive(:order).and_return(order)
   end
 
   describe "#create" do
-    describe "with success as status" do
-      let(:payment_status) { "success" }
+    describe "with payed as status" do
+      let(:payment_status) { "payed" }
+
       it "finds the Payment to be processed" do
         expect(Spree::BitkassaTransaction).to receive(:find_by!).
           with(bitkassa_payment_id: "dhqe4cnj7f").
@@ -25,6 +26,24 @@ describe Spree::BitkassaCallbackController do
         post :create, create_params
       end
     end
+
+    describe "with cancelled as status" do
+      let(:payment_status) { "cancelled" }
+
+      it "voids the payment" do
+        expect(payment).to receive(:void!)
+        post :create, create_params
+      end
+    end
+
+    describe "with expired as status" do
+      let(:payment_status) { "expired" }
+
+      it "voids the payment" do
+        expect(payment).to receive(:void!)
+        post :create, create_params
+      end
+    end
   end
 
   private
@@ -32,8 +51,8 @@ describe Spree::BitkassaCallbackController do
   def create_params
     json_payload = {
       payment_id: "dhqe4cnj7f",
+      meta_info: "A947183352",
       payment_status: payment_status,
-      meta_info: "A947183352"
     }.to_json
 
     now = Time.zone.now.to_i

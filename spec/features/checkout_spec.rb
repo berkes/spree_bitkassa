@@ -9,10 +9,11 @@ feature "checkout" do
     order.reload
   end
   let(:bitkassa_request_url) { "https://www.bitkassa.nl/api/v1" }
-  let(:bitkassa) { Spree::PaymentMethod::BitkassaMethod.create!(name: "Bitcoin") }
+  let(:bitkassa) { @bitkassa }
   let(:payment_request_response) { stored_response("payment_request_response") }
 
   before do
+    @bitkassa = Spree::PaymentMethod::BitkassaMethod.create!(name: "Bitcoin")
     stub_user_with_order(user, order)
 
     stub_request(:post, bitkassa_request_url).
