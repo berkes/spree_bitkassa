@@ -30,10 +30,6 @@ feature "checkout" do
     # We now have a pending payment.
   end
 
-  after do
-    Capybara.page.driver.options[:follow_redirects] = true
-  end
-
   scenario "API posts a succss callback spree sends order confirmation mail" do
     json_payload = {
       payment_id: "2nwxqex8lu",

@@ -29,10 +29,6 @@ feature "checkout" do
     Capybara.page.driver.options[:follow_redirects] = false
   end
 
-  after do
-    Capybara.page.driver.options[:follow_redirects] = true
-  end
-
   scenario "I select 'Bitcoin' it creates a transaction at Bitkassa and redirects me there" do
     choose "Bitcoin"
     click_button "Save and Continue"
