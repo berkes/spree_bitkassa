@@ -87,6 +87,7 @@ RSpec.configure do |config|
   config.before :each do
     DatabaseCleaner.strategy = RSpec.current_example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
+    Capybara.reset_sessions!
 
     # Set a fake API key and merchant_id.
     Spree::Config.bitkassa_secret_api_key = "SECRET"
@@ -96,6 +97,9 @@ RSpec.configure do |config|
   # After each spec clean the database.
   config.after :each do
     DatabaseCleaner.clean
+    # Several tests set this to false to avoid redirects offsite.
+    # Setting it back, regardless of the success in those tests.
+    Capybara.page.driver.options[:follow_redirects] = true
   end
 
   config.fail_fast = ENV['FAIL_FAST'] || false

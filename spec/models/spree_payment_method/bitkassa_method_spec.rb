@@ -71,4 +71,8 @@ describe Spree::PaymentMethod::BitkassaMethod do
       )
     end
   end
+
+  describe "#source_required" do
+    it { expect(subject.source_required?).to eq false }
+  end
 end

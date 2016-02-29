@@ -1,3 +1,5 @@
 Spree::Core::Engine.routes.draw do
-  # Add your extension routes here
+  match "/bitkassa/callback" => "bitkassa_callback#create",
+        :via => :post,
+        :as => :bitkassa_callback
 end
