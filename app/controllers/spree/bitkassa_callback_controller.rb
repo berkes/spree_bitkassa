@@ -1,5 +1,7 @@
 module Spree
   class BitkassaCallbackController < ApplicationController
+    before_action :authenticate
+
     def create
       load_transaction
       process_transaction
@@ -27,8 +29,18 @@ module Spree
       transaction_params[:payment_id]
     end
 
+    def authenticate
+      unless Bitkassa::Authentication.valid?(params[:a], json_params)
+        head :forbidden
+      end
+    end
+
+    def json_params
+      Base64.urlsafe_decode64(params[:p])
+    end
+
     def transaction_params
-      JSON.parse(Base64.urlsafe_decode64(params[:p])).with_indifferent_access
+      JSON.parse(json_params).with_indifferent_access
     end
 
     def complete_order

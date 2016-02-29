@@ -63,4 +63,25 @@ feature "checkout" do
       page.driver.post("bitkassa/callback", "p=#{payload}&a=#{authentication}")
     end.to change(ActionMailer::Base.deliveries, :length).by(0)
   end
+
+  scenario "Mallory attempts to forge a transaction" do
+    # Mallory does not have access to the secret_api_key, so sets this herself
+    Bitkassa.config.secret_api_key = "GUESSED"
+
+    json_payload = {
+      payment_id: "2nwxqex8lu",
+      payment_status: "cancelled", # Same for "expired"
+      meta_info: "A947183352"
+    }.to_json
+
+    now = Time.zone.now.to_i
+    authentication = Bitkassa::Authentication.sign(json_payload, now)
+    payload        = Base64.urlsafe_encode64(json_payload)
+
+    # Set the secret key back to SECRET because the backend uses this same key
+    Bitkassa.config.secret_api_key = "SECRET"
+
+    page.driver.post("bitkassa/callback", "p=#{payload}&a=#{authentication}")
+    expect(page.status_code).to eq 403
+  end
 end

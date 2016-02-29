@@ -11,15 +11,18 @@ describe Spree::BitkassaCallbackController do
   end
 
   describe "#create" do
+    let(:payment_status) { "anything" }
+
+    it "finds the Payment to be processed" do
+      expect(Spree::BitkassaTransaction).to receive(:find_by!).
+        with(bitkassa_payment_id: "dhqe4cnj7f").
+        and_return(transaction)
+      post :create, create_params
+    end
+
     describe "with payed as status" do
       let(:payment_status) { "payed" }
 
-      it "finds the Payment to be processed" do
-        expect(Spree::BitkassaTransaction).to receive(:find_by!).
-          with(bitkassa_payment_id: "dhqe4cnj7f").
-          and_return(transaction)
-        post :create, create_params
-      end
 
       it "completes the order for this transaction" do
         expect(order).to receive(:next!)
@@ -42,6 +45,18 @@ describe Spree::BitkassaCallbackController do
       it "voids the payment" do
         expect(payment).to receive(:void!)
         post :create, create_params
+      end
+    end
+
+    describe "with invalid signed request" do
+      it "returns a 400" do
+        # API signs with a different api_key
+        Bitkassa.config.secret_api_key = "GUESSED"
+        params = create_params
+        Bitkassa.config.secret_api_key = "SECRET"
+
+        post :create, params
+        expect(response.status).to be 403
       end
     end
   end
