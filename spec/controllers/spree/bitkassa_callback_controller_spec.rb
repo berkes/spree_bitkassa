@@ -1,9 +1,7 @@
 require "spec_helper"
 
 describe Spree::BitkassaCallbackController do
-  let(:transaction) { double(:transaction, payment: payment, order: order) }
-  let(:payment) { double(:payment) }
-  let(:order) { double(:order, next!: nil) }
+  let(:transaction) { double(:transaction, void: false, pay: false) }
 
   before do
     allow(Spree::BitkassaTransaction).to receive(:find_by!).
@@ -23,9 +21,8 @@ describe Spree::BitkassaCallbackController do
     describe "with payed as status" do
       let(:payment_status) { "payed" }
 
-
-      it "completes the order for this transaction" do
-        expect(order).to receive(:next!)
+      it "pays the transaction" do
+        expect(transaction).to receive(:pay)
         post :create, create_params
       end
     end
@@ -33,8 +30,8 @@ describe Spree::BitkassaCallbackController do
     describe "with cancelled as status" do
       let(:payment_status) { "cancelled" }
 
-      it "voids the payment" do
-        expect(payment).to receive(:void!)
+      it "voids the transaction" do
+        expect(transaction).to receive(:void)
         post :create, create_params
       end
     end
@@ -43,7 +40,7 @@ describe Spree::BitkassaCallbackController do
       let(:payment_status) { "expired" }
 
       it "voids the payment" do
-        expect(payment).to receive(:void!)
+        expect(transaction).to receive(:void)
         post :create, create_params
       end
     end

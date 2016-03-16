@@ -44,11 +44,11 @@ module Spree
     end
 
     def complete_order
-      @bitkassa_transaction.order.next!
+      @bitkassa_transaction.pay
     end
 
     def void_payment
-      @bitkassa_transaction.payment.void!
+      @bitkassa_transaction.void
     end
 
     def payment_status
