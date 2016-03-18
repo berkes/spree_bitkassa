@@ -8,6 +8,7 @@ module Spree
 
     def pay
       order.next!
+      payment.complete!
     end
 
     def void

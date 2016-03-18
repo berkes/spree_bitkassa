@@ -4,6 +4,11 @@ describe Spree::BitkassaTransaction do
   let(:order) { Spree::Order.new }
   let(:payment) { Spree::Payment.new(order: order) }
 
+  before do
+    allow(order).to receive(:next!)
+    allow(payment).to receive(:complete!)
+  end
+
   it "has a payment" do
     subject.build_payment
     expect(subject.payment).to be_a Spree::Payment
@@ -33,6 +38,12 @@ describe Spree::BitkassaTransaction do
     it "transitions order with next!" do
       subject.payment = payment
       expect(order).to receive(:next!)
+      subject.pay
+    end
+
+    it "completes the payment" do
+      subject.payment = payment
+      expect(payment).to receive(:complete!)
       subject.pay
     end
   end
