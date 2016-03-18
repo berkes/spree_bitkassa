@@ -1,6 +1,14 @@
 require "spec_helper"
 
 describe Spree::BitkassaTransaction do
+  let(:order) { Spree::Order.new }
+  let(:payment) { Spree::Payment.new(order: order) }
+
+  before do
+    allow(order).to receive(:next!)
+    allow(payment).to receive(:complete!)
+  end
+
   it "has a payment" do
     subject.build_payment
     expect(subject.payment).to be_a Spree::Payment
@@ -13,10 +21,30 @@ describe Spree::BitkassaTransaction do
     end
 
     it "is the order from the payment" do
-      order = double(:order)
-      allow(subject).to receive(:payment).
-        and_return(double(:payment, order: order))
+      subject.payment = payment
       expect(subject.order).to be order
+    end
+  end
+
+  describe "#void" do
+    it "voids the payment" do
+      subject.payment = payment
+      expect(payment).to receive(:void!)
+      subject.void
+    end
+  end
+
+  describe "#pay" do
+    it "transitions order with next!" do
+      subject.payment = payment
+      expect(order).to receive(:next!)
+      subject.pay
+    end
+
+    it "completes the payment" do
+      subject.payment = payment
+      expect(payment).to receive(:complete!)
+      subject.pay
     end
   end
 end
