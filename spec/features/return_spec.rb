@@ -36,7 +36,7 @@ feature "checkout" do
   scenario "I return on the site after the callback posted a success" do
     callback_posts(:payed)
 
-    visit "/checkout/finish"
+    visit "/bitkassa/returns/#{order.number}"
     expect(page).to have_content "Your order has been processed successfully"
     expect(page).to have_content "Payment Information Bitcoin"
 
