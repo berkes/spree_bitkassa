@@ -43,6 +43,24 @@ feature "checkout" do
     expect(order.reload.state).to eq "complete"
   end
 
+  ##
+  # As a user with an order
+  # When I walk through the Bitkassa Payment
+  # And I return on the shop via the return url
+  # But the Bitkassa API has not yet posted its result
+  # Then I see an unfinished order
+  # So that I know my order is still pending
+  scenario "I return on the site when the callback has not yet posted" do
+    visit "/bitkassa/returns/#{order.number}"
+    expect(page).to have_content "Your order has been processed and the payment
+      is pending. You will receive a confirmation once the payment is processed
+      successfully"
+    ## We can still change the payment information, hence the edit link shows.
+    expect(page).to have_content "Payment Information (Edit) Bitcoin"
+
+    expect(order.reload.state).to eq "payment"
+  end
+
   private
 
   def callback_posts(status)

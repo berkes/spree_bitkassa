@@ -5,3 +5,6 @@ en:
   spree:
     bitkassa_merchant_id: Merchant ID
     bitkassa_secret_api_key: Secret API key
+    order_processed_pending: "Your order has been processed and the payment is pending.
+      You will receive a confirmation once the payment is processed successfully"
+
