@@ -12,6 +12,10 @@ describe Spree::PaymentMethod::BitkassaMethod do
                     payment_url: "https://example.com/tx/qwerty")
   end
 
+  let(:store) do
+    instance_double("Spree::Store", url: "example.com", name: "Example")
+  end
+
   describe "#initalize configures Bitkassa" do
     let(:bitkassa_config) do
       instance_double("Bitkassa::Config",
@@ -43,6 +47,8 @@ describe Spree::PaymentMethod::BitkassaMethod do
     before do
       allow(Bitkassa::PaymentRequest).to receive(:new)
         .and_return(payment_request)
+      allow(Spree::Store).to receive(:current)
+        .and_return(store)
     end
 
     it "initiates Bitkassa::PaymentRequest with currency" do
@@ -51,6 +57,21 @@ describe Spree::PaymentMethod::BitkassaMethod do
         .with(hash_including(expected))
       subject.initiate(order)
     end
+
+    it "initiates Bitkassa::PaymentRequest with return_url" do
+      expected = { return_url: "http://example.com/bitkassa/returns/#{order.number}" }
+      expect(Bitkassa::PaymentRequest).to receive(:new)
+        .with(hash_including(expected))
+      subject.initiate(order)
+    end
+
+    it "initiates Bitkassa::PaymentRequest with callback_url" do
+      expected = { update_url: "http://example.com/bitkassa/callback" }
+      expect(Bitkassa::PaymentRequest).to receive(:new)
+        .with(hash_including(expected))
+      subject.initiate(order)
+    end
+
 
     it "performs a new request on the PaymentRequest" do
       expect(payment_request).to receive(:perform).and_return(payment_response)

@@ -13,6 +13,7 @@ feature "checkout" do
   let(:payment_request_response) { stored_response("payment_request_response") }
 
   before do
+    record_api_requests
     @bitkassa = Spree::PaymentMethod::BitkassaMethod.create!(name: "Bitcoin")
     stub_user_with_order(user, order)
 
@@ -36,7 +37,8 @@ feature "checkout" do
   scenario "I return on the site after the callback posted a success" do
     callback_posts(:payed)
 
-    visit "/bitkassa/returns/#{order.number}"
+    visit api_payload["return_url"]
+
     expect(page).to have_content "Your order has been processed successfully"
     expect(page).to have_content "Payment Information Bitcoin"
 

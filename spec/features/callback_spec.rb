@@ -13,6 +13,7 @@ feature "checkout" do
   end
 
   before do
+    record_api_requests
     @bitkassa = Spree::PaymentMethod::BitkassaMethod.create!(name: "Bitcoin")
     stub_user_with_order(user, order)
 
@@ -42,7 +43,7 @@ feature "checkout" do
     payload        = Base64.urlsafe_encode64(json_payload)
 
     expect do
-      page.driver.post("bitkassa/callback", "p=#{payload}&a=#{authentication}")
+      page.driver.post(api_payload["update_url"], "p=#{payload}&a=#{authentication}")
     end.to change(ActionMailer::Base.deliveries, :length).by(1)
     mail = ActionMailer::Base.deliveries.last
     expect(mail.subject).to match /Order Confirmation/
@@ -60,7 +61,7 @@ feature "checkout" do
     payload        = Base64.urlsafe_encode64(json_payload)
 
     expect do
-      page.driver.post("bitkassa/callback", "p=#{payload}&a=#{authentication}")
+      page.driver.post(api_payload["update_url"], "p=#{payload}&a=#{authentication}")
     end.to change(ActionMailer::Base.deliveries, :length).by(0)
   end
 

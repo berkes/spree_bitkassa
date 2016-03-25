@@ -52,6 +52,7 @@ RSpec.configure do |config|
 
   config.include SpreeStubs
   config.include WebMockFixtureHelpers
+  config.include BitkassaApiHelpers
 
   # == Requests support
   #

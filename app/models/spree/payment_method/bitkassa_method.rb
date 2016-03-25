@@ -1,5 +1,7 @@
 module Spree
   class PaymentMethod::BitkassaMethod < PaymentMethod
+    include Spree::Core::Engine.routes.url_helpers
+
     preference :bitkassa_merchant_id, :string
     preference :bitkassa_secret_api_key, :string
 
@@ -15,12 +17,13 @@ module Spree
     ##
     # Initiates a payment with the API.
     def initiate(order)
+      store = Spree::Store.current
       attributes = {
         currency: "EUR",
         amount: order.payment_total.to_i,
-        description: "#{Spree::Store.current.name} - Order: #{order.number}",
-        return_url: "http://example.com/return",
-        update_url: "http://example.com/update",
+        description: "#{store.name} - Order: #{order.number}",
+        return_url: bitkassa_returns_url(order.number, host: store.url),
+        update_url: bitkassa_callback_url(host: store.url),
         meta_info: order.number
       }
 
